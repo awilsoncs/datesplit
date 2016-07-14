@@ -14,9 +14,8 @@ def main():
 		filename = args.input
 		if args.verbose:
 			print("Opening file {0}".format(filename))
-		with open(filename, newline='') as f:
-			freader = csv.reader(f, delimiter=' ', quotechar='|')
-
+		with open(filename) as f:
+			freader = csv.reader(f)
 
 			#read the header
 			if not args.noheader:
@@ -43,7 +42,7 @@ def main():
 			for row in freader:
 				if args.verbose: 
 					print("Splitting record {0}".format(lineCounter+1))
-				rows += (splitLine(row[0], 
+				rows += (splitLine(row, 
 					args.start-1, args.end-1, 
 					lineCounter, idCol=args.id-1, 
 					verbose=args.verbose, mode=mode))
@@ -61,8 +60,7 @@ def main():
 				export = "./splitDateResult.csv"
 
 			with open(export, 'w', newline='\n') as destfile:
-				csvwriter = csv.writer(destfile, delimiter=',',
-					quotechar='|', quoting=csv.QUOTE_MINIMAL)
+				csvwriter = csv.writer(destfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
 				if not args.noheader:
 					csvwriter.writerow(header)
 				for row in rows:
@@ -72,11 +70,11 @@ def main():
 		print("OS error: {0}".format(err))
 
 
-def splitLine(line, startCol, endCol, lineCounter=0, idCol=0, verbose=False, mode='m'):
+def splitLine(row, startCol, endCol, lineCounter=0, idCol=0, verbose=False, mode='m'):
 	"""Return a list of the original line broken across months
 
 	Arguments
-	line 		-- the original line
+	row 		-- the original csv row
 	startCol 	-- integer column number of the starting date (0-indexed)
 	endCol 		-- integer column number of the ending date (0-indexed)
 	lineCounter	-- integer row number
@@ -85,8 +83,6 @@ def splitLine(line, startCol, endCol, lineCounter=0, idCol=0, verbose=False, mod
 	mode 		-- d | m | y to split by day, month, or year
 	""" 
 	try:
-		row = line.split(',')
-
 		#get the id
 		id = ""
 		if idCol >= 0:
