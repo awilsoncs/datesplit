@@ -40,6 +40,7 @@ def main():
 			if args.verbose:
 				print("Starting date split.")
 			for row in freader:
+				print('.', end='', flush=True)
 				if args.verbose: 
 					print("Splitting record {0}".format(lineCounter+1))
 				rows += (splitLine(row, 
@@ -47,6 +48,7 @@ def main():
 					lineCounter, idCol=args.id-1, 
 					verbose=args.verbose, mode=mode))
 				lineCounter += 1
+			print("\n")
 			if args.verbose:
 				print("Date split complete.")
 				if args.export:
@@ -98,6 +100,11 @@ def splitLine(row, startCol, endCol, lineCounter=0, idCol=0, verbose=False, mode
 		endDate = dateparser.parse(row[endCol])
 
 		if not startDate or not endDate:
+			if verbose:
+				print("Date split failed on id {0}.".format(id))
+				print("Found start date: {0}".format(row[startCol]))
+				print("Found end date: {0}".format(row[endCol]))
+				print("Check that these are valid dates and the correct start and end columns.")
 			exit()
 
 		return _breakOutDates(id, startDate, endDate, row, verbose=verbose, mode=mode)
