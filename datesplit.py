@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import argparse
 import csv
 import datetime
@@ -40,7 +42,6 @@ def main():
 			if args.verbose:
 				print("Starting date split.")
 			for row in freader:
-				print('.', end='', flush=True)
 				if args.verbose: 
 					print("Splitting record {0}".format(lineCounter+1))
 				rows += (splitLine(row, 
@@ -61,8 +62,11 @@ def main():
 			if not export:
 				export = "./splitDateResult.csv"
 
-			with open(export, 'w', newline='\n') as destfile:
-				csvwriter = csv.writer(destfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+			with open(export, 'w') as destfile:
+				csvwriter = csv.writer(destfile, 
+					delimiter=',', 
+					quoting=csv.QUOTE_MINIMAL, 
+					lineterminator="\n")
 				if not args.noheader:
 					csvwriter.writerow(header)
 				for row in rows:
