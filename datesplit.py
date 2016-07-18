@@ -6,7 +6,9 @@ import datetime
 import sys
 
 import dateparser
+from gooey import Gooey, GooeyParser
 
+@Gooey(program_name='Date Split')
 def main():
 	parser = addArgs()
 	args = parser.parse_args()
@@ -180,7 +182,7 @@ def _formatDateLine(ID, startDate, endDate, original, verbose=False):
 
 def addArgs():
 	"""Assign all arguments for the script"""
-	parser = argparse.ArgumentParser(
+	parser = GooeyParser(
 		description="Split dated CSV into rows defined by a date mode.")
 	mode = parser.add_mutually_exclusive_group()
 	parser.add_argument("-v", "--verbose",
@@ -215,7 +217,8 @@ def addArgs():
 		help="integer column of the end date (1-indexed)",
 		type=int)
 	parser.add_argument("input",
-		help="input file to be broken out")
+		help="input file to be broken out",
+		widget="FileChooser")
 	return parser
 
 
